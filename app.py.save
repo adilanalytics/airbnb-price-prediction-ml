@@ -1,0 +1,123 @@
+import streamlit as st
+import pandas as pd
+import joblib
+
+# -----------------------------
+# Page configuration
+# -----------------------------
+st.set_page_config(
+    page_title="Airbnb Price Predictor",
+    page_icon="🏠",
+    layout="centered"
+)
+
+# -----------------------------
+# Load trained model
+# -----------------------------
+model = joblib.load("model/airbnb_price_model.pkl")
+
+# -----------------------------
+# App title and description
+# -----------------------------
+st.title("🏠 Airbnb Price Predictor")
+
+st.write(
+    "Enter the details of an Airbnb listing below to estimate its price."
+)
+
+st.divider()
+
+# -----------------------------
+# User inputs
+# -----------------------------
+st.subheader("Listing Details")
+
+neighbourhood_group = st.selectbox(
+    "Neighbourhood Group",
+    [
+        "Bronx",
+        "Brooklyn",
+        "Manhattan",
+        "Queens",
+        "Staten Island"
+    ]
+)
+
+neighbourhood = st.text_input(
+    "Neighbourhood",
+    value="Harlem"
+)
+
+room_type = st.selectbox(
+    "Room Type",
+    [
+        "Entire home/apt",
+        "Private room",
+        "Shared room"
+    ]
+)
+
+latitude = st.number_input(
+    "Latitude",
+    value=40.7128,
+    format="%.6f"
+)
+
+longitude = st.number_input(
+    "Longitude",
+    value=-74.0060,
+    format="%.6f"
+)
+
+minimum_nights = st.number_input(
+    "Minimum Nights",
+    min_value=1,
+    value=3,
+    step=1
+)
+
+number_of_reviews = st.number_input(
+    "Number of Reviews",
+    min_value=0,
+    value=10,
+    step=1
+)
+
+reviews_per_month = st.number_input(
+    "Reviews Per Month",
+    min_value=0.0,
+    value=1.0,
+    step=0.1
+)
+
+calculated_host_listings_count = st.number_input(
+    "Calculated Host Listings Count",
+    min_value=1,
+    value=1,
+    step=1
+)
+
+availability_365 = st.number_input(
+    "Availability (365 Days)",
+    min_value=0,
+    max_value=365,
+    value=200,
+    step=1
+)
+
+# -----------------------------
+# Prediction
+# -----------------------------
+if st.button("Predict Airbnb Price", type="primary"):
+
+    input_data = pd.DataFrame(
+        {
+            "neighbourhood group": [neighbourhood_group],
+            "neighbourhood": [neighbourhood],
+            "room type": [room_type],
+            "latitude": [latitude],
+            "longitude": [longitude],
+            "minimum nights": [minimum_nights],
+            "number_of_reviews": [number_of_reviews],
+            "reviews_per_month": [reviews_per_month],
+        
